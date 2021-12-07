@@ -7,18 +7,24 @@ const path = require('path');
 const mongoose = require('mongoose')
 const session = require('express-session')
 const flash = require('express-flash')
-const MongoStore = require('connect-mongo');
+const MongoDbStore = require('connect-mongo')(session)
 const passport = require('passport')
 const Emitter = require('events')
 const bodyParser = require('body-parser')
 
 // Database connection
+mongoose.connect(process.env.MONGO_CONNECTION_URLS, { useNewUrlParser: true, useUnifiedTopology: true });
+const connection = mongoose.connection;
+connection.once('open', () => {
+    console.log('Database connected...');
+})
 
-mongoose.connect(process.env.MONGO_CONNECTION_URLS, { useNewUrlParser: true, useUnifiedTopology: true, });
-const connection = mongoose.connection
-connection
-    .once('open', () => console.log('connected to MongoDB!'))
-    .on('error', err => console.error('connecting to MongoDB ' + err))
+// Session store
+let mongoStore = new MongoDbStore({
+    mongooseConnection: connection,
+    collection: 'sessions'
+})
+
 
 //event emiter
 const eventEmitter = new Emitter()
@@ -27,7 +33,7 @@ app.set('eventEmitter', eventEmitter)
 //session confige    
 app.use(session({
     secret: process.env.COOKIE_SECRET,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_CONNECTION_URLS }),
+    store: mongoStore,
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
