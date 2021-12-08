@@ -13,11 +13,13 @@ const Emitter = require('events')
 const bodyParser = require('body-parser')
 
 // Database connection
-mongoose.connect(process.env.MONGO_CONNECTION_URLS, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGO_CONNECTION_URLS, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log("DB connection successful!"))
+    .catch(() => console.log("Error connecting DB!"));
+
 const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log('Database connected...');
-})
 
 // Session store
 let mongoStore = new MongoDbStore({
@@ -104,7 +106,6 @@ eventEmitter.on('itemUpdated', (data) => {
     io.to('productRoom').emit('itemUpdated', data)
 })
 eventEmitter.on('itemDeleted', (data) => {
-    console.log(data)
     io.to('productRoom').emit('itemDeleted', data)
 })
 

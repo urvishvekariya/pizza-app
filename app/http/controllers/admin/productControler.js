@@ -9,19 +9,20 @@ function productControler() {
 
             const { iname, iprice, isize } = req.body
             //validate request
-            if (!iname || !iprice || !isize || !req.file.filename) {
+            if (!iname || !iprice || !isize || !req.file.location) {
                 req.flash('error', 'All fields are requireds')
                 req.flash('iname', iname)
                 req.flash('iprice', iprice)
                 req.flash('isize', isize)
-                req.flash('iimage', req.file.filename)
+                req.flash('iimage', req.file.location)
                 return res.redirect('/admin/product')
             }
+
             const menu = new Menu({
                 name: iname,
                 price: iprice,
                 size: isize,
-                image: req.file.filename,
+                image: req.file.location,
             })
             //item exist 
             const found = await Menu.exists({ name: iname })
@@ -32,18 +33,6 @@ function productControler() {
                 req.flash('isize', isize)
                 return res.redirect('/admin/product')
             } else {
-                // await menu.save().then((result) => {
-                //     // Emit
-                //     const eventEmitter = req.app.get('eventEmitter')
-                //     eventEmitter.emit('itemAdded', result)
-
-                //     req.flash('success', 'New Item Added')
-                //     return res.redirect('/admin/product')
-                // }).catch(err => {
-                //     console.log(err)
-                //     req.flash('error', 'Something went wrong')
-                //     return res.redirect('/admin/product')
-                // })
 
                 try {
 
@@ -70,15 +59,16 @@ function productControler() {
                     req.flash('error', 'Something went wrong')
                     return res.redirect('/admin/product')
                 }
-
             }
         },
+
         async update(req, res) {
             // console.log(req.params.id)
             const productid = req.params.id
             const product = await Menu.findById(productid)
             return res.render('admin/updateProduct', { product })
         },
+
         async updateProduct(req, res) {
             const { name, price, size } = req.body
             // validate request
@@ -98,7 +88,7 @@ function productControler() {
                 if (req.file) {
                     var dataRecord = {
                         name: req.body.name,
-                        image: req.file.filename,
+                        image: req.file.location,
                         price: req.body.price,
                         size: req.body.size
                     }
@@ -118,7 +108,7 @@ function productControler() {
                     if (req.file) {
                         var dataRecord = {
                             name: req.body.name,
-                            image: req.file.filename,
+                            image: req.file.location,
                             price: req.body.price,
                             size: req.body.size
                         }
@@ -141,14 +131,14 @@ function productControler() {
                 req.flash('error', 'Item Updated')
                 return res.redirect('/')
             }).catch(err => {
-                console.log(err)
+                // console.log(err)
                 req.flash('error', 'Something went wrong')
                 return res.redirect('/admin/product/update/' + req.params.id)
             })
         },
         async delete(req, res) {
             await Menu.findByIdAndDelete(req.params.id).then((result) => {
-                // console.log(result)
+
                 // Emit Delete item 
                 const eventEmitter = req.app.get('eventEmitter')
                 eventEmitter.emit('itemDeleted', result)

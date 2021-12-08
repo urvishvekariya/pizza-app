@@ -1,18 +1,16 @@
+const aws = require("aws-sdk");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
+
+const s3 = new aws.S3({
+    accessKeyId: process.env.AWS_S3_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_S3_SECRET_KEY,
+    region: process.env.AWS_S3_BUCKET_REGION,
+
+});
 
 function uploadFile(req, res, next) {
 
-    //Configuration for Multer
-    const multerStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, "public/img/");
-        },
-        filename: (req, file, cb) => {
-            const ext = file.mimetype.split("/")[1];
-            cb(null, `item-${file.fieldname}-${Date.now()}.${ext}`);
-        },
-    });
-    // Multer Filter
     const multerFilter = (req, file, cb) => {
         if (file.mimetype.split("/")[1] === "jpg" || file.mimetype.split("/")[1] === "jpeg" || file.mimetype.split("/")[1] === "png") {
             cb(null, true);
@@ -24,14 +22,22 @@ function uploadFile(req, res, next) {
 
     //Calling the "multer" Function
     const upload = multer({
-        storage: multerStorage,
         fileFilter: multerFilter,
+        storage: multerS3({
+            s3,
+            bucket: process.env.AWS_S3_BUCKET_NAME,
+            metadata: function (req, file, cb) {
+                cb(null, { fieldName: file.fieldname });
+            },
+            key: function (req, file, cb) {
+                const ext = file.mimetype.split("/")[1];
+                cb(null, `image-${Date.now()}.${ext}`);
+            },
+        }),
     }).single('iimage')
 
-
-    // const upload = multer().single('yourFileNameHere');
-
     upload(req, res, function (err) {
+
         const { iname, iprice, isize } = req.body
         if (err instanceof multer.MulterError) {
 
@@ -40,6 +46,7 @@ function uploadFile(req, res, next) {
             if (req.params.id) {
                 return res.redirect('/admin/product/update/' + req.params.id)
             }
+
             return res.redirect('/admin/product')
         } else if (err) {
             // An unknown error occurred when uploading.
@@ -47,6 +54,7 @@ function uploadFile(req, res, next) {
             if (req.params.id) {
                 return res.redirect('/admin/product/update/' + req.params.id)
             }
+
             return res.redirect('/admin/product')
         }
         if (!req.params.id) {

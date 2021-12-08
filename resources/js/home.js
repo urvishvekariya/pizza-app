@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Noty from 'noty'
+
 
 export function initProduct(socket) {
     const orderTableBody = document.querySelector('#productDivBody')
@@ -30,7 +30,7 @@ export function initProduct(socket) {
         return pizzas.map(pizza => {
             return `
             <div class="w-full md:w-64">
-    <img class="h-40 mb-4 mx-auto" src="/img/${pizza.image}" alt="">
+    <img class="h-40 mb-4 mx-auto" src="${pizza.image}" alt="">
     <div class="text-center">
         <h2 class="mb-4 text-lg">
             ${pizza.name}

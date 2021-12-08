@@ -4,15 +4,7 @@ function cartControler() {
             res.render('customers/cart')
         },
         update(req, res) {
-            // let cart = {
-            //     items: {
-            //         pizzaId: { item: pizzaObject, qty:0 },
-            //         pizzaId: { item: pizzaObject, qty:0 },
-            //         pizzaId: { item: pizzaObject, qty:0 },
-            //     },
-            //     totalQty: 0,
-            //     totalPrice: 0
-            // }
+
             // for the first time creating cart and adding basic object structure
             if (!req.session.cart) {
                 req.session.cart = {
@@ -62,8 +54,7 @@ function cartControler() {
                 return res.redirect('/cart')
             }
 
-            // console.log(cart.totalQty)
-            // console.log(cart.totalPrice)
+
         },
         addQty(req, res) {
             let cart = req.session.cart

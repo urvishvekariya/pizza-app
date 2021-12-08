@@ -12,7 +12,7 @@ export async function initStripe() {
     }
 
     paymentType.addEventListener('change', (e) => {
-        console.log(e.target.value)
+
         if (e.target.value === 'card') {
             // Display Widget
             card = new CardWidget(stripe)
@@ -33,15 +33,13 @@ export async function initStripe() {
             for (let [key, value] of formData.entries()) {
                 formObject[key] = value
             }
-            console.log(formObject)
+
 
             if (!card) {
-                console.log("Please")
                 placeOrder(formObject)
-                console.log("back from order")
                 return;
             }
-            console.log('error of cod')
+
             const token = await card.createToken()
             formObject.stripeToken = token.id
             placeOrder(formObject)
