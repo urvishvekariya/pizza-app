@@ -4,17 +4,19 @@ const stripe = require('stripe')(process.env.STRIPE_PGATED_PRIVATE_KEY_NAME)
 function orderControler() {
     return {
         store(req, res) {
-            //validate request
+
             const { phone, address, paymentType, stripeToken, } = req.body
+            //validate request
             if (!phone || !address) {
-                return res.status(422).json({ message: 'All fileds are required' });
+                console.log('please provide data')
+                return res.json({ error: 'All fileds are required' });
             }
+
             const order = new Order({
                 customerId: req.user._id,
                 items: req.session.cart.items,
                 phone,
                 address
-
             })
             order.save().then(result => {
                 Order.populate(result, { path: 'customerId' }, (err, placedOrder) => {

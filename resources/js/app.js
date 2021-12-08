@@ -7,7 +7,7 @@ import moment from 'moment'
 
 
 let cartCounter = document.querySelector('#cartCounter')
-
+//Add to cart
 $(document).on("click", ".add-to-cart", function () {
     let pizza = JSON.parse($(this).attr('data-pizza'))
     updatecart(pizza)

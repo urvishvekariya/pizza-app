@@ -34,12 +34,10 @@ export async function initStripe() {
                 formObject[key] = value
             }
 
-
             if (!card) {
                 placeOrder(formObject)
                 return;
             }
-
             const token = await card.createToken()
             formObject.stripeToken = token.id
             placeOrder(formObject)

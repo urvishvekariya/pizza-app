@@ -27,6 +27,7 @@ function initRoutes(app) {
     app.post('/minus-qty/:id', cartControler().minusQty)
     app.post('/add-qty/:id', cartControler().addQty)
     app.get('/empty-cart', cartControler().empty)
+
     //customers Routes
     app.post('/orders', auth, orderControler().store)
     app.get('/customer/orders', auth, orderControler().index)
@@ -35,6 +36,7 @@ function initRoutes(app) {
     //admin Routes
     app.get('/admin/orders', admin, AdminOrderControler().index)
     app.post('/admin/order/status', admin, AdminStatusControler().update)
+
     //product Routes
     app.get('/admin/product', admin, AdminProductControler().index)
     app.post('/admin/product/add', admin, upload, AdminProductControler().addProduct)
