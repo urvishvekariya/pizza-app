@@ -105,7 +105,7 @@ function authControler() {
                 } else {
                     const secret = process.env.JWT_SECRET + result.password
                     const token = jwt.sign({ result }, secret, { expiresIn: '15m' })
-                    const link = `http://13.232.45.38/rest-password/${result._id}/${token}`
+                    const link = `http://localhost:3000/rest-password/${result._id}/${token}`
                     sendResetiLnk(result.email, link)
                     return res.render('auth/sendlink')
                 }
@@ -152,6 +152,7 @@ function authControler() {
                             const hashedPassword = await bcrypt.hash(password, 10)
                             user.password = hashedPassword
                             await user.save()
+                            req.flash('updated', 'Your password is updated Login now!')
                             return res.redirect('/login')
                         } catch (err) {
                             req.flash('error', 'Password reset link is expired')
