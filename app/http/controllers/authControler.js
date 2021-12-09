@@ -105,7 +105,7 @@ function authControler() {
                 } else {
                     const secret = process.env.JWT_SECRET + result.password
                     const token = jwt.sign({ result }, secret, { expiresIn: '15m' })
-                    const link = `http://13.232.45.38/rest-password/${result._id}/${token}`
+                    const link = `http://${process.env.PUBLIC_API}/rest-password/${result._id}/${token}`
                     sendResetiLnk(result.email, link)
                     return res.render('auth/sendlink')
                 }
