@@ -44,6 +44,11 @@ function initRoutes(app) {
     app.post('/admin/product/update/:id', admin, upload, AdminProductControler().updateProduct)
     app.get('/admin/product/delete/:id', admin, AdminProductControler().delete)
 
+    //forgot password
+    app.get('/forgot-password', authControler().getForgotPassword)
+    app.post('/forgot-password', authControler().postForgotPassword)
+    app.get('/rest-password/:id/:token', authControler().getResetPassword)
+    app.post('/rest-password/:id/:token', authControler().postResetPassword)
 
     app.get('*', errorControler().index)
 }
